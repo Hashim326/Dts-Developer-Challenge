@@ -40,10 +40,7 @@ export class TasksComponent implements OnInit {
     this.taskService.getAllTasks().subscribe({
       next: (res) => {
         if (res.success) {
-          console.log(res.data);
-          this.tasks = res.data.map((item: { id: number; title: string; description: string; status: number; dueDate: string; }) => new Task(item.id, item.title, item.description, item.status, item.dueDate + 'Z'));
-          console.log(this.tasks);
-              
+          this.tasks = res.data.map((item: { id: number; title: string; description: string; status: number; dueDate: string; }) => new Task(item.id, item.title, item.description, item.status, item.dueDate + 'Z'));              
         }
       },
       error: (error) => {

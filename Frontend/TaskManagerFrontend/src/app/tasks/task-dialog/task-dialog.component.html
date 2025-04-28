@@ -14,19 +14,16 @@
 
   <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
     <mat-label>Status</mat-label>
-    <mat-select formControlName="status">
-      <mat-option value= 0 >To do</mat-option>
-      <mat-option value= 1 >In Progress</mat-option>
-      <mat-option value= 2 >Completed</mat-option>
-      <mat-option value= 3 >Blocked</mat-option>
-      <mat-option value= 4 >Cancelled</mat-option>
-
+    <mat-select formControlName="status" [(ngModel)]="selectedStatus">
+      @for (status of statusValues; track status) {
+        <mat-option [value]="status.value">{{status.viewValue}}</mat-option>
+      }
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
     <mat-label>Time</mat-label>
-    <input matInput [matTimepicker]="timepicker" formControlName="dueDate">
+    <input matInput [matTimepicker]="timepicker" formControlName="dueTime">
     <mat-timepicker #timepicker/>
     <mat-timepicker-toggle [for]="timepicker" matSuffix/>
   </mat-form-field>

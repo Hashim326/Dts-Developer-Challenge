@@ -33,6 +33,16 @@ export class TaskDialogComponent {
   minDate: Date = new Date();
   minTime: Date = new Date();
 
+  statusValues = [
+    {value: 0, viewValue: 'To do'},
+    {value: 1, viewValue: 'In progress'},
+    {value: 2, viewValue: 'Complete'},
+    {value: 3, viewValue: 'Blocked'},
+    {value: 4, viewValue: 'Cancelled'},
+  ]
+
+  selectedStatus = 0;
+
   constructor(
     private dialogRef: MatDialogRef<TaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { task?: Task },
@@ -40,24 +50,36 @@ export class TaskDialogComponent {
   ) {
     this.isEditMode = !!data?.task;
 
-    let date = new Date();
-    console.log(date);
-    
-    if (data?.task?.dueDate) {
-      date = data?.task?.dueDate;
+    if(data?.task?.status){
+      this.selectedStatus = data?.task?.status;
     }
-    console.log(date);
 
     this.taskForm = this.fb.group({
       title: [data?.task?.title || '', Validators.required],
       description: [data?.task?.description || '', Validators.required],
-      status: [data?.task?.status || '', Validators.required],
-      dueDate: [data?.task?.dueDate ? new Date(data.task.dueDate + 'Z') : new Date(), Validators.required]
+      status: [this.selectedStatus, Validators.required],
+      dueDate: [data?.task?.dueDate ? new Date(data.task.dueDate) : new Date(), Validators.required],
+      dueTime: [data?.task?.dueDate ? new Date(data.task.dueDate) : new Date(), Validators.required]
     });
 
   }
 
   saveTask() {
+    const dueDateObj = this.taskForm.get("dueDate")?.value
+    const dueTimeObj = this.taskForm.get("dueTime")?.value
+
+    const newDate = new Date(
+      dueDateObj.getFullYear(),
+      dueDateObj.getMonth(),
+      dueDateObj.getDate(),
+      dueTimeObj.getHours(),
+      dueTimeObj.getMinutes(),
+      dueTimeObj.getSeconds(),
+      dueTimeObj.getMilliseconds()
+    );
+
+    this.taskForm.patchValue({dueDate: newDate})
+
     if (this.taskForm.valid) {
       const formValue = this.taskForm.value;
       this.dialogRef.close({
