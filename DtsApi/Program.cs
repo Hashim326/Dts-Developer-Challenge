@@ -43,6 +43,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -64,5 +67,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();
