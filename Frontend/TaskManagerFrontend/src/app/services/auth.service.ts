@@ -23,10 +23,13 @@ export class AuthService {
   public logout(): void {
     localStorage.removeItem('token');
     this.router.navigate(['/']);
-
   }
 
   public isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
+  }
+
+  public getToken(): string | null {
+    return localStorage.getItem('token');
   }
 }
