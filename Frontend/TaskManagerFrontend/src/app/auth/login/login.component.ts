@@ -1,19 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-import { NgIf } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     ReactiveFormsModule, 
-    NgIf,     
     MatCardModule,
     MatInputModule,
     MatButtonModule,
@@ -23,8 +22,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  private _snackBar = inject(MatSnackBar);
   loginForm: FormGroup;
-  errorMessage: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -34,7 +33,7 @@ export class LoginComponent {
   }
 
 
-  onSubmit() {
+  public onSubmit(): void {
     if (this.loginForm.invalid) return;
 
     const { email, password } = this.loginForm.value;
@@ -46,8 +45,13 @@ export class LoginComponent {
         }
       },
       error: (err) => {
-        this.errorMessage = 'Invalid login credentials.';
-      }
+        console.log(err);
+        if (err.status === 400) {
+          this._snackBar.open(err.error, "X");
+        }else{
+          this._snackBar.open("There was an issue whilst logging in. Please check the form and try again", "X");
+        }
+    }
     });
   }
 }
