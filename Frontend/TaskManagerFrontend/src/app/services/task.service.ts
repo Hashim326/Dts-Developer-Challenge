@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TaskService {
-  private apiUrl = ' https://localhost:7101/api/auth';
+  private apiUrl = ' https://localhost:7101/api/task';
 
   constructor(private http: HttpClient) {}
 
