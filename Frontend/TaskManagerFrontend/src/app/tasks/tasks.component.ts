@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { MatTableModule } from '@angular/material/table'  
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-tasks',
@@ -13,7 +14,8 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule
   ],  templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css'
 })
