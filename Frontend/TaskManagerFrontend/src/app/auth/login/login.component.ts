@@ -42,6 +42,7 @@ export class LoginComponent {
       next: (res) => {
         if (res.success) {
           localStorage.setItem('token', res.data);
+          this.router.navigate(['/tasks']);
         }
       },
       error: (err) => {
