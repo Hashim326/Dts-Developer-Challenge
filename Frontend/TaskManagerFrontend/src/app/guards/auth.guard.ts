@@ -1,12 +1,16 @@
 import { CanActivateFn } from '@angular/router';
 import {jwtDecode} from 'jwt-decode';
+import { AuthService } from '../services/auth.service';
+import { inject } from '@angular/core';
 
 export const authGuard: CanActivateFn = () => {
-const tokenExists = !!localStorage.getItem('token'); 
+  const authService = inject(AuthService);
+
+const tokenExists = authService.isLoggedIn(); 
 
   if (tokenExists) {
     try {
-      const token: string = localStorage.getItem('token')!
+      const token: string = authService.getToken()!;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const decodedToken: any = jwtDecode(token);
       
