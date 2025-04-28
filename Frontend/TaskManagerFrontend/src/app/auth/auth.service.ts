@@ -14,6 +14,10 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password });
   }
 
+  public signUp(name: string, email: string, password: string): Observable<any> {{
+    return this.http.post<any>(`${this.apiUrl}/register`, { email, password, name })
+  }}
+
   public logout(): void {
     localStorage.removeItem('token');
   }
