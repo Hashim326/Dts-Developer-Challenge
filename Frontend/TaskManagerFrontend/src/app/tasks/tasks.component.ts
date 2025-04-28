@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TaskDialogComponent } from './task-dialog/task-dialog.component';
 
 @Component({
   selector: 'app-tasks',
@@ -27,7 +28,7 @@ export class TasksComponent implements OnInit {
   private _snackBar = inject(MatSnackBar);
 
   tasks: Task[] = [];
-  displayedColumns: string[] = ['title', 'status', 'dueDate', 'actions'];
+  displayedColumns: string[] = ['title', 'description', 'status', 'dueDate', 'actions'];
 
   constructor(private authService: AuthService, private taskService: TaskService, private dialog: MatDialog) {}
 
@@ -40,7 +41,7 @@ export class TasksComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           console.log(res.data);
-          this.tasks = res.data.map((item: { id: number; title: string; description: string; status: number; dueDate: string; }) => new Task(item.id, item.title, item.description, item.status, item.dueDate));
+          this.tasks = res.data.map((item: { id: number; title: string; description: string; status: number; dueDate: string; }) => new Task(item.id, item.title, item.description, item.status, item.dueDate + 'Z'));
           console.log(this.tasks);
               
         }
@@ -74,11 +75,55 @@ export class TasksComponent implements OnInit {
   }
 
   addTask() {
-    console.log('Add Task Clicked');
+    const dialogRef = this.dialog.open(TaskDialogComponent, {
+      width: '400px'
+    });
+  
+    dialogRef.afterClosed().subscribe(res => {
+      console.log(res);
+      if (res) {
+        this.taskService.createTask(res.title, res.description, Number(res.status), res.dueDate).subscribe({
+          next: (res) => {
+            if (res.success) {
+              this._snackBar.open('Task successfully created!', 'X', { duration: 3000 });          
+              this.loadTasks(); 
+            }
+          },
+          error: (error) => {
+            this._snackBar.open('There was an issue whilst creating this task', 'X', { duration: 3000 });        
+            console.error('Error fetching tasks', error);
+          }
+        });
+      }
+    });  
   }
 
   editTask(taskId: number) {
-    console.log('Edit task:');
+    const task = this.tasks.find(t => t.id === taskId);
+    if (!task) return;
+  
+    const dialogRef = this.dialog.open(TaskDialogComponent, {
+      width: '400px',
+      data: { task }
+    });
+  
+    dialogRef.afterClosed().subscribe(res => {
+      console.log(res);
+      if (res) {
+        this.taskService.updateTask(taskId, res.title, res.description, Number(res.status), res.dueDate).subscribe({
+          next: (res) => {
+            if (res.success) {
+              this._snackBar.open('Task successfully updated!', 'X', { duration: 3000 });          
+              this.loadTasks(); 
+            }
+          },
+          error: (error) => {
+            this._snackBar.open('There was an issue whilst updating this task', 'X', { duration: 3000 });        
+            console.error('Error fetching tasks', error);
+          }
+        });
+      }
+    });
   }
 
   deleteTask(taskId: number) {
@@ -96,7 +141,7 @@ export class TasksComponent implements OnInit {
         this.taskService.deleteTask(taskId).subscribe({
           next: (res) => {
             if (res.success) {
-              this._snackBar.open('Task deleted successfully!', 'X', { duration: 3000 });          
+              this._snackBar.open('Task successfully deleted!', 'X', { duration: 3000 });          
               this.loadTasks(); 
             }
           },

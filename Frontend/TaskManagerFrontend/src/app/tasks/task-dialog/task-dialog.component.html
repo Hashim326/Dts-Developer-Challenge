@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Task' : 'Add New Task' }}</h2>
+
+<form [formGroup]="taskForm" (ngSubmit)="saveTask()" style="padding: 1rem;">
+  
+  <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
+    <mat-label>Task Name</mat-label>
+    <input matInput formControlName="title">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
+    <mat-label>Status</mat-label>
+    <mat-select formControlName="status">
+      <mat-option value= 0 >To do</mat-option>
+      <mat-option value= 1 >In Progress</mat-option>
+      <mat-option value= 2 >Completed</mat-option>
+      <mat-option value= 3 >Blocked</mat-option>
+      <mat-option value= 4 >Cancelled</mat-option>
+
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
+    <mat-label>Time</mat-label>
+    <input matInput [matTimepicker]="timepicker" formControlName="dueDate">
+    <mat-timepicker #timepicker/>
+    <mat-timepicker-toggle [for]="timepicker" matSuffix/>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
+    <mat-label>Due Date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="dueDate">
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <div style="text-align: right;">
+    <button mat-stroked-button type="button" (click)="closeDialog()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="taskForm.invalid">
+      {{ isEditMode ? 'Update' : 'Create' }}
+    </button>
+  </div>
+</form>
